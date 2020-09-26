@@ -3,8 +3,7 @@
 #include <fstream>
 #include <cmath>
 using namespace std;
-const int r = 6372.79;
-const int p = 3.141;
+const double r = 6372.795;
 struct location{
     int deg,min,sec;
 };
@@ -21,7 +20,7 @@ public:
 
 
     void print()const; // This member promises NOT to change *this
-    double findDistance(city)const;
+    double findDistance(city)const; //takes in a class
 
 };
 //END OF CLASS
@@ -60,26 +59,38 @@ void city::print()const{
 }
 double city::findDistance(city a)const{
 
+    double distance,o,latf,lats,latdiff,longdiff,longf,longs,y,z;
 
+    // forepoint is *this
+    // standpoint is passed in as a city variable
+    double p=4*atan(1);  //formula for pi
 
+    latf=((lat.deg + (lat.min + lat.sec/60.0)/60.0) )* p / 180.0;
+    lats=((a.lat.deg + (a.lat.min + a.lat.sec/60.0)/60.0) )* p / 180.0;
+    longf=((lon.deg + (lon.min + lon.sec/60.0)/60.0) )* p / 180.0;
+    longs=((a.lon.deg + (a.lon.min + a.lon.sec/60.0)/60.0) )* p / 180.0;
 
-    // double distance,o,latf,lats,latdiff,longdiff,longf,longs;
-    // distance=r*o;
+    longdiff= longf-longs;
+    latdiff= latf-lats;
+    y=pow(sin(latdiff/2),2);
+    z=cos(lats)*cos(latf)*pow(sin(longdiff/2),2);
+    o=2*asin(sqrt(y+z));
 
-    // latf=((degree + (minute + second/60)/60) )* p / 180;
-    // lats=((degree + (minute + second/60)/60) )* p / 180;
-    // longf=((degree + (minute + second/60)/60) )* p / 180;
-    // longs=((degree + (minute + second/60)/60) )* p / 180;
+    distance=r*o;
 
-    // longdiff=longf-longs;
-    // latdiff=latf-lats;
-    // y=pow(sin(latdiff/2),2);
-    // z=cos(lats)*cos(latf)*pow(sin(longdiff)/2,2);
-    // o=2*asin(sqrt(y+z));
+    // cout << "lat.deg = " << lat.deg << endl;
+    // cout << "a.lat.leg = " << a.lat.deg << endl;
 
-    // distance=r*o;
+    // cout << "lon.deg = " << lon.deg << endl;
+    // cout << "a.lon.deg = " << a.lon.deg << endl;
 
-    return 1.0;
+    // cout << "longf = " << longf << endl;
+    // cout << "longs = " <<longs <<endl;
+
+    // cout<<"longdiff is = " << longdiff << endl;
+    // cout<<"latdiff is = " << latdiff << endl;
+
+    return distance;
 }
 
 int main() {
@@ -87,14 +98,13 @@ int main() {
     ifstream fin;
     fin.open("city.txt");
 
-    string x1;
+    string x1,x0;
     int x2,x3,x4,x5,x6,x7,x8;
-
+    double td=0;
     int counter = 0;
     
 
     while(fin >> x1 >> x2>>x3>>x4>>x5>>x6>>x7>>x8){
-        // cout << x1 << "  " << x2 <<" "<<x3 << "  " << x4 << "  " << x5<< "  " << x6<< "  " << x7<< "  " << x8<< endl;
         counter+=1;
     }
 
@@ -108,6 +118,8 @@ int main() {
     for(int i=0;i<counter;i++){
 
         fin >>x1>>x2>>x3>>x4>>x5>>x6>>x7>>x8;
+        //reading file and takes in values
+    
 
         location a, b;
         a.deg=x3;
@@ -121,40 +133,15 @@ int main() {
         ca[i].set(x1,x2,a,b);
 
         ca[i].print();
+        if( i!=0){
+        cout<<endl<<"The distance between "<<x1<<" and "<<x0<<" is: ";
+        cout<<ca[i].findDistance(ca[i-1])<<endl;
+        td+=ca[i].findDistance(ca[i-1]); //a sum that add total distances
+    }
+        x0=x1; //new variable to save previous city name
+
 }
-
-
+cout<<endl<<"Total distance between all cities is: "<<td;
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // int c[5];
-    // ifstream in;
-    // in.open("city.txt");
-    // for(int i=0;i<5;i++){
-    //     in>>name>>pop>>lat.deg>>lat.min>>lat.sec>>lon.deg>>lon.min>>lon.sec;
-    // }
-    // in.close( );
-    // ^^^ Maissan's friends stupid code
-
-
-
-
-
-
-
-
-
