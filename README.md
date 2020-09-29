@@ -1,2 +1,2 @@
 # OOP_3
-City distance (using lat and long) calculator
+Calculates the distance of two locations (cities) using latitude and longtitude coordinates.
